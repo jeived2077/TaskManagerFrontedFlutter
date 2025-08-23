@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:task_manager/ChangePass/CreatePasswordWidget.dart';
 
 class OtpVerification extends StatefulWidget {
-
   final String correctOtp;
+  final String email_send;
 
-  const OtpVerification({Key? key, required this.correctOtp}) : super(key: key);
+  const OtpVerification({
+    Key? key,
+    required this.correctOtp,
+    required this.email_send,
+  }) : super(key: key);
 
   @override
   _OtpVerificationState createState() => _OtpVerificationState();
 }
 
 class _OtpVerificationState extends State<OtpVerification> {
-
   late List<TextEditingController> _controllers;
 
   late List<FocusNode> _focusNodes;
@@ -25,9 +29,11 @@ class _OtpVerificationState extends State<OtpVerification> {
   void initState() {
     super.initState();
 
-    _controllers = List.generate(_otpLength, (index) => TextEditingController());
+    _controllers = List.generate(
+      _otpLength,
+      (index) => TextEditingController(),
+    );
     _focusNodes = List.generate(_otpLength, (index) => FocusNode());
-
 
     for (int i = 0; i < _otpLength; i++) {
       _focusNodes[i].addListener(() {
@@ -62,11 +68,19 @@ class _OtpVerificationState extends State<OtpVerification> {
   }
 
   void _verifyOtp() {
-    print('Полученный код с класса: ${widget.correctOtp}');
-    print('Полученный код с текстового поля: $_enteredOtp');
-    if (_enteredOtp == widget.correctOtp) {
+    String enteredOtp = _enteredOtp.toString().trim();
+    String correctOtp = widget.correctOtp.toString().trim();
+    String email = widget.email_send.toString().trim();
+    print('Полученный email с класса: "$email"');
+    print('Полученный код с класса: "$correctOtp"');
+    print('Полученный код с текстового поля: "$enteredOtp"');
+
+    if (enteredOtp == correctOtp) {
       setState(() {
-        _message = "Код подтвержден успешно! ✅";
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => CreateNewPassword(email_send: email,)),
+        );
         print('Правильный код');
         _messageColor = Colors.green;
       });
@@ -127,9 +141,13 @@ class _OtpVerificationState extends State<OtpVerification> {
                   width: 50,
                   height: 60,
                   decoration: BoxDecoration(
-                    color: _focusNodes[index].hasFocus ? Colors.white : Color(0xFFF7F8F9),
+                    color: _focusNodes[index].hasFocus
+                        ? Colors.white
+                        : Color(0xFFF7F8F9),
                     border: Border.all(
-                      color: _focusNodes[index].hasFocus ? Color(0xFF34C2C1) : Color(0xFFE8ECF4),
+                      color: _focusNodes[index].hasFocus
+                          ? Color(0xFF34C2C1)
+                          : Color(0xFFE8ECF4),
                       width: 1.2,
                     ),
                     borderRadius: BorderRadius.circular(8),

@@ -14,12 +14,12 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
-  // 2. Создаем TextEditingController
+
   final TextEditingController _emailController = TextEditingController();
 
   @override
   void dispose() {
-    // 5. Очищаем контроллер
+
     _emailController.dispose();
     super.dispose();
   }

@@ -1,91 +1,130 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
-class PasswordChanged extends StatelessWidget {
+import '../Home/homeWidget.dart';
+
+class PasswordChanged extends StatefulWidget {
+  const PasswordChanged({super.key});
+
+  @override
+  State<PasswordChanged> createState() => _PasswordChangedState();
+}
+
+class _PasswordChangedState extends State<PasswordChanged>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(vsync: this);
+
+    _animationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        Future.delayed(const Duration(seconds: 1), () {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const HomePage()),
+          );
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: 375,
-          height: 812,
-          clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(color: Colors.white),
-          child: Stack(
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Positioned(
-                left: 22,
-                top: 508,
-                child: Container(
-                  width: 331,
-                  height: 56,
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFF1E232C),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
+              Lottie.asset(
+                'assets/success_animation.json',
+                controller: _animationController,
+                onLoaded: (composition) {
+                  if (composition != null) {
+                    _animationController
+                      ..duration = composition.duration
+                      ..forward();
+                  } else {
+                    // Handle the case where composition is null, e.g., print a message or navigate directly
+                    print('Error: Lottie composition is null.');
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) => const HomePage()),
+                    );
+                  }
+                },
+                width: screenWidth * 0.4,
+                height: screenWidth * 0.4,
+              ),
+              const SizedBox(height: 40),
+              const Text(
+                'Пароль изменён!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Color(0xFF1E232C),
+                  fontSize: 26,
+                  fontFamily: 'Urbanist',
+                  fontWeight: FontWeight.w700,
                 ),
               ),
-              Positioned(
-                left: 143,
-                top: 527,
-                child: Text(
-                  'Back to Login',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w600,
-                  ),
+              const SizedBox(height: 16),
+              const Text(
+                'Ваш пароль был успешно изменен.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Color(0xFF8390A1),
+                  fontSize: 15,
+                  fontFamily: 'Urbanist',
+                  fontWeight: FontWeight.w500,
+                  height: 1.50,
                 ),
               ),
-              Positioned(
-                left: 75,
-                top: 422,
-                child: SizedBox(
-                  width: 226,
-                  child: Text(
-                    'Your password has been changed successfully.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: const Color(0xFF8390A1),
-                      fontSize: 15,
-                      fontFamily: 'Urbanist',
-                      fontWeight: FontWeight.w500,
-                      height: 1.50,
+              const SizedBox(height: 40),
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => const HomePage()),
+                          (Route<dynamic> route) => false,
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF1E232C),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                ),
-              ),
-              Positioned(
-                left: 72,
-                top: 383,
-                child: Text(
-                  'Password Changed!',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: const Color(0xFF1E232C),
-                    fontSize: 26,
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.w700,
+                  child: const Text(
+                    'Вернуться ко входу',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-              ),
-              Positioned(
-                left: 138,
-                top: 248,
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  clipBehavior: Clip.antiAlias,
-                  decoration: BoxDecoration(),
-                  child: Stack(),
                 ),
               ),
             ],
           ),
         ),
-      ],
+      ),
     );
   }
 }
